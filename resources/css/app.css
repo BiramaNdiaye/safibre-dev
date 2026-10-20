@@ -1,0 +1,153 @@
+@import '@fontsource-variable/montserrat/wght.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Couleurs de la marque (ancien site et logos) : le vert est la couleur principale,
+       l orange la secondaire. Fonds sombres : noir #030303 (consigne du 19/10). */
+    --encre: 3 3 3;
+    --encre-2: 22 22 22;
+    /* Avant : --encre: 15 31 25 (#0F1F19) et --encre-2: 24 46 37 */
+    --orange: 228 107 34;
+    --vert: 65 127 98;
+    --papier: 246 245 241;
+
+    /* Accent des boutons et etats actifs : vert partout, orange sur le terrain (comme les logos).
+       « clair » sert pour le texte sur fond sombre, ou le vert de base manque de contraste. */
+    --accent: 65 127 98;
+    --accent-fonce: 45 90 70;
+    --accent-clair: 125 186 154;
+  }
+
+  [data-pole="terrain"] {
+    --accent: 228 107 34;
+    --accent-fonce: 196 90 26;
+    --accent-clair: 240 145 80;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-papier font-sans text-encre antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    @apply bg-accent text-white;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+}
+
+@layer components {
+  .conteneur {
+    @apply mx-auto w-full max-w-[1240px] px-5 sm:px-8;
+  }
+
+  /* Petit titre au-dessus des grands : capitales espacees, comme Stelogy */
+  .surtitre {
+    @apply inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.22em];
+  }
+
+  .bouton {
+    @apply inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[13px] font-bold uppercase tracking-wider transition-all duration-300;
+  }
+  .bouton-plein {
+    @apply bouton bg-accent text-white hover:bg-accent-fonce hover:shadow-[0_10px_30px_-10px_rgb(var(--accent))];
+  }
+  .bouton-contour {
+    @apply bouton border border-current hover:bg-white hover:text-encre;
+  }
+  .bouton-contour-sombre {
+    @apply bouton border border-encre/20 text-encre hover:border-encre hover:bg-encre hover:text-white;
+  }
+}
+
+@layer utilities {
+  /* Masque des titres : chaque ligne sort de sous un bord invisible */
+  .ligne-masque {
+    display: block;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+    /* On ne masque que le bas (d ou sort le texte) : un mot long n est jamais rogne sur les cotes */
+    clip-path: inset(-0.5em -100vw 0 -100vw);
+  }
+  .ligne-masque > span {
+    display: block;
+  }
+
+  /* Balisage de chantier (bandes orange / noir) : signature de la page operations terrain uniquement */
+  .balisage {
+    background-image: repeating-linear-gradient(-45deg, rgb(var(--orange)) 0 12px, rgb(var(--encre)) 12px 24px);
+  }
+
+  /* Papier millimetre, tres leger : signature de la page bureau d etudes (les plans) */
+  .papier-plan {
+    background-image: linear-gradient(rgb(var(--vert) / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--vert) / 0.07) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  /* Le meme quadrillage en vert soutenu, visible seulement autour de la souris (composants/fond_plan.tsx) */
+  .papier-plan-vif {
+    background-image: radial-gradient(circle at var(--x, -999px) var(--y, -999px), rgb(var(--vert) / 0.07), transparent 70%),
+      linear-gradient(rgb(var(--vert) / 0.45) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--vert) / 0.45) 1px, transparent 1px);
+    background-size: 100% 100%, 32px 32px, 32px 32px;
+    -webkit-mask-image: radial-gradient(240px circle at var(--x, -999px) var(--y, -999px), #000, transparent);
+    mask-image: radial-gradient(240px circle at var(--x, -999px) var(--y, -999px), #000, transparent);
+  }
+
+  .grain {
+    background-image: radial-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+}
+
+@keyframes defiler {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes apparaitre {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+
+@keyframes descendre {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(300%);
+  }
+}
+
+/* Rien n est cache en CSS : GSAP pose l etat de depart avant le premier affichage (useGSAP
+   s execute avant la peinture). Sans JavaScript, ou si une animation ne part pas, tout reste visible. */
+
+@keyframes remplir {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes poser {
+  from {
+    transform: scale(1.12);
+  }
+}

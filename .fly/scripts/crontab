@@ -1,0 +1,1 @@
+0 0 * * * ./scripts/2_backup_db.sh
